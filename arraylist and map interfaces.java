@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Main {
+public class StudentRecordSystem {
 
     static class Student {
         int roll;
@@ -78,7 +78,7 @@ public class Main {
         System.out.println();
         System.out.println("After Removing First Student");
         System.out.println();
-        printTable(studentList);
+        printTable(studentList); 
 
         LinkedHashMap<Integer, Student> studentMap = new LinkedHashMap<>();
         for (Student s : studentList) {
