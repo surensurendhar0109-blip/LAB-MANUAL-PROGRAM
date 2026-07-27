@@ -26,12 +26,13 @@ public class StudentFile {
         }
 
         bw.close();
+        sc.close();
         System.out.println("\nStudent records saved successfully.");
 
         BufferedReader br = new BufferedReader(new FileReader("students.txt"));
 
         System.out.println("\nStudent Records");
-        String line;
+        String line; 
 
         while ((line = br.readLine()) != null) {
             System.out.println(line);
