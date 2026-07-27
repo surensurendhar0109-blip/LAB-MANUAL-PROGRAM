@@ -6,7 +6,7 @@ public class StudentRegistrationForm extends JFrame implements ActionListener {
 
     JLabel l1, l2, l3;
     JTextField t1, t2, t3;
-    JButton submit, clear;
+    JButton submit, clear; 
 
     StudentRegistrationForm() {
 
