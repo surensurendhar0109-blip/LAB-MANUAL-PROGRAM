@@ -28,7 +28,7 @@ public class EmployeeAnalytics {
                 new Employee(103, "Kiran", "CSE", 48000),
                 new Employee(104, "Divya", "MECH", 51000),
                 new Employee(105, "Arjun", "ECE", 70000)
-        );
+        ); 
 
         // Display all employees
         System.out.println("---- All Employees ----");
