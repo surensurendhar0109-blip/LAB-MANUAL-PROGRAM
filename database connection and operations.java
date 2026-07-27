@@ -1,95 +1,138 @@
-import java.util.*;
-import java.util.stream.*;
-
-class Employee {
-    int id;
-    String name;
-    String department;
-    double salary;
-
-    Employee(int id, String name, String department, double salary) {
-        this.id = id;
-        this.name = name;
-        this.department = department;
-        this.salary = salary;
-    }
-
-    public String toString() {
-        return id + " " + name + " " + department + " " + salary;
-    }
-}
-
-public class EmployeeAnalytics {
-    public static void main(String[] args) {
-
-        List<Employee> employees = Arrays.asList(
-                new Employee(101, "Rahul", "CSE", 55000),
-                new Employee(102, "Sneha", "ECE", 62000),
-                new Employee(103, "Kiran", "CSE", 48000),
-                new Employee(104, "Divya", "MECH", 51000),
-                new Employee(105, "Arjun", "ECE", 70000)
-        ); 
-
-        // Display all employees
-        System.out.println("---- All Employees ----");
-        employees.forEach(System.out::println);
-
-        // Employees with salary > 50000 in descending order
-        System.out.println("\n---- Salary Above 50000 (High to Low) ----");
-        employees.stream()
-                .filter(e -> e.salary > 50000)
-                .sorted((e1, e2) -> Double.compare(e2.salary, e1.salary))
-                .forEach(e -> System.out.println(e.name + " -> " + e.salary));
-
-        // Employee names
-        List<String> names = employees.stream()
-                .map(e -> e.name)
-                .collect(Collectors.toList());
-
-        System.out.println("\n---- Employee Names ----");
-        System.out.println(names);
-
-        // Group by department
-        Map<String, List<String>> grouped = employees.stream()
-                .collect(Collectors.groupingBy(
-                        e -> e.department,
-                        Collectors.mapping(e -> e.name, Collectors.toList())
-                ));
-
-        System.out.println("\n---- Employees Grouped by Department ----");
-        grouped.forEach((dept, empNames) ->
-                System.out.println(dept + " : " + empNames));
-
-        // Average salary by department
-        Map<String, Double> avgSalary = employees.stream()
-                .collect(Collectors.groupingBy(
-                        e -> e.department,
-                        Collectors.averagingDouble(e -> e.salary)
-                ));
-
-        System.out.println("\n---- Average Salary per Department ----");
-        avgSalary.forEach((dept, avg) ->
-                System.out.printf("%s : %.2f%n", dept, avg));
-
-        // Total salary
-        double totalSalary = employees.stream()
-                .map(e -> e.salary)
-                .reduce(0.0, Double::sum);
-
-        System.out.printf("%nTotal Salary Paid : %.2f%n", totalSalary);
-
-        // Count CSE employees
-        long cseCount = employees.stream()
-                .filter(e -> e.department.equals("CSE"))
-                .count();
-
-        System.out.println("Number of CSE Employees : " + cseCount);
-
-        // Highest paid employee
-        Optional<Employee> highestPaid = employees.stream()
-                .max(Comparator.comparingDouble(e -> e.salary));
-
-        highestPaid.ifPresent(e ->
-                System.out.println("Highest Paid : " + e.name + " (" + e.salary + ")"));
-    }
-}
+Program
+import java.sql.*;
+public class StudentJDBC {
+ public static void main(String[] args) {
+ String url = "jdbc:mysql://localhost:3306/college";
+ String user = "root";
+ String password = "your_password";
+ Connection con = null;
+ PreparedStatement insert = null;
+ PreparedStatement select = null;
+ PreparedStatement update = null;
+ PreparedStatement delete = null;
+ PreparedStatement display = null;
+ try {
+ // Load MySQL JDBC Driver
+ Class.forName("com.mysql.cj.jdbc.Driver");
+ // Establish Database Connection
+ con = DriverManager.getConnection(url, user, password);
+ System.out.println("Database Connected Successfully.");
+ // =================================================
+ // INSERT OPERATION
+ // =================================================
+ String insertQuery =
+ "INSERT INTO student "
+ + "(roll_no, name, department, marks) "
+ + "VALUES (?, ?, ?, ?)";
+ insert = con.prepareStatement(insertQuery);
+ // Insert Student 1
+ insert.setInt(1, 101);
+ insert.setString(2, "Rahul");
+ insert.setString(3, "CSE");
+ insert.setInt(4, 90);
+ insert.executeUpdate();
+ // Insert Student 2
+ insert.setInt(1, 102);
+ insert.setString(2, "Sneha");
+ insert.setString(3, "ISE");
+ insert.setInt(4, 91);
+ insert.executeUpdate();
+ System.out.println("\nRecords Inserted");
+ System.out.println("Successfully.");
+ // =================================================
+ // SELECT / SEARCH OPERATION
+ // =================================================
+ String selectQuery =
+ "SELECT * FROM student WHERE roll_no = ?";
+ select = con.prepareStatement(selectQuery);
+ // Search student with Roll Number 101
+ select.setInt(1, 101);
+ ResultSet rs = select.executeQuery();
+ System.out.println("\nStudent Details");
+ if (rs.next()) {
+ System.out.println("\nRoll No : "
+ + rs.getInt("roll_no"));
+ System.out.println("Name : "
+ + rs.getString("name"));
+ System.out.println("Department : "
+ + rs.getString("department"));
+ System.out.println("Marks : "
+ + rs.getInt("marks"));
+ }
+ rs.close();
+ // =================================================
+ // UPDATE OPERATION
+ // =================================================
+ String updateQuery =
+ "UPDATE student SET marks = ? "
+ + "WHERE roll_no = ?";
+ update = con.prepareStatement(updateQuery);
+ // Update Rahul's marks
+ update.setInt(1, 95);
+ update.setInt(2, 101);
+ int updatedRows = update.executeUpdate();
+ if (updatedRows > 0) {
+ System.out.println("\nRecord Updated Successfully.");
+ }
+ // =================================================
+ // DELETE OPERATION
+ // =================================================
+ /*
+ * Delete operation is included here.
+ * It is commented so that the student record
+ * remains available for the final display.
+ */
+ String deleteQuery =
+ "DELETE FROM student WHERE roll_no = ?";
+ delete = con.prepareStatement(deleteQuery);
+ // Example:
+ // delete.setInt(1, 102);
+ // delete.executeUpdate();
+ // System.out.println("\nRecord Deleted Successfully.");
+ // =================================================
+ // DISPLAY ALL STUDENT RECORDS
+ // =================================================
+ String displayQuery =
+ "SELECT * FROM student";
+ display = con.prepareStatement(displayQuery);
+ ResultSet result = display.executeQuery();
+ System.out.println("\nStudent Records");
+ System.out.println("----------------------------------------");
+ System.out.println(
+ "Roll\tName\tDepartment\tMarks"
+ );
+ System.out.println("----------------------------------------");
+ while (result.next()) {
+ System.out.println(
+ result.getInt("roll_no")
+ + "\t"
+ + result.getString("name")
+ + "\t"
+ + result.getString("department")
+ + "\t\t"
+ + result.getInt("marks")
+ );
+ }
+ System.out.println("----------------------------------------");
+ result.close();
+ }
+ catch (ClassNotFoundException e) {
+ System.out.println(
+ "MySQL JDBC Driver not found."
+ );
+ e.printStackTrace();
+ }
+ catch (SQLException e) {
+ System.out.println(
+ "Database Error."
+ );
+ e.printStackTrace();
+ }
+ finally {
+ try {
+ // Close PreparedStatements
+ if (insert != null)
+ insert.close();
+ if (select != null)
+ select.close();
+ if (update != null)
